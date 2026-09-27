@@ -1,5 +1,5 @@
-// a[i:j] leaves the capacity running to the end of the array, a[i:j:k] stops it
-// at k. copy moves min(len(dst), len(src)) elements and never grows a slice.
+// NOTE: a[i:j] leaves the capacity running to the end of the array, a[i:j:k]
+// stops it at k. copy moves min(len(dst), len(src)) elements and never grows.
 package main
 
 import "fmt"
@@ -14,8 +14,8 @@ func main() {
 
 	fmt.Println("tail:", all[5:], "head:", all[:2])
 
-	// an out-of-range index panics; a high bound past cap panics too
-	// all[2:99] = panic: slice bounds out of range
+	// BUG: an out-of-range index panics, and so does a high bound past cap.
+	// all[2:99] would panic: slice bounds out of range
 
 	dst := make([]int, 3)
 	n := copy(dst, all[6:])

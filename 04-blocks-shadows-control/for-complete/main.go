@@ -1,4 +1,4 @@
-// The complete for has init; condition; post. Init must use :=, the
+// NOTE: the complete for has init; condition; post. Init must use :=, the
 // condition is checked before every lap, and the post runs after each one.
 package main
 
@@ -28,7 +28,7 @@ func main() {
 	}
 	fmt.Println()
 
-	// Prefer this form when you iterate a slice window rather than every
+	// NOTE: prefer this form when you iterate a slice window rather than every
 	// element; the bounds state the intent better than break/continue can.
 	scores := []int{9, 7, 8, 6, 10}
 	for k := 1; k < len(scores)-1; k++ {

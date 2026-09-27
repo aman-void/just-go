@@ -1,5 +1,6 @@
-// GOOS and GOARCH are baked in when you build, not when you run, so the same
-// source reports whatever you targeted: GOOS=windows GOARCH=amd64 go build ./...
+// NOTE: GOOS and GOARCH are baked in when you build, not when you run, so the
+// same source reports whatever you targeted:
+// GOOS=windows GOARCH=amd64 go build ./...
 package main
 
 import (

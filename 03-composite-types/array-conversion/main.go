@@ -1,6 +1,6 @@
-// arr[:] shares memory with the array behind it, so copy is the only route to an
-// independent array. Turning a slice into an array needs the slice to be at
-// least that long, and panics when it is not.
+// NOTE: arr[:] shares memory with the array behind it, so copy is the only route
+// to an independent array. Turning a slice into an array needs the slice to be
+// at least that long, and panics when it is not.
 package main
 
 import "fmt"
@@ -24,6 +24,6 @@ func main() {
 			fmt.Println("recovered from:", r)
 		}
 	}()
-	tooBig := [8]int(sl) // len(sl) is 4: this panics
+	tooBig := [8]int(sl) // WARNING: len(sl) is 4, so this panics
 	fmt.Println("never reached:", tooBig)
 }

@@ -1,4 +1,4 @@
-// := always declares in the current block, so it can quietly shadow an
+// NOTE: := always declares in the current block, so it can quietly shadow an
 // outer variable instead of updating it. Use = when you mean to reuse.
 package main
 
@@ -8,7 +8,9 @@ func main() {
 	fuel := 10
 	if fuel > 5 {
 		fmt.Println("before:", fuel)
-		fuel := 5 // shadow: a new fuel that lives only inside this if body
+		// WARNING: this declares a brand-new fuel that shadows the outer one
+		// and dies with the if body, so the outer fuel is never updated.
+		fuel := 5
 		fmt.Println("inside:", fuel)
 	}
 	fmt.Println("after:", fuel) // outer fuel never changed
@@ -25,7 +27,8 @@ func main() {
 	fuel = 5
 	fmt.Println("reassigned:", fuel)
 
-	// The same trap applies to predeclared names (true, len, ...) and to
-	// imports: a local called fmt or len would hide the package or builtin
-	// for the rest of its block, so never reuse those names.
+	// WARNING: the same trap applies to predeclared names (true, len, ...) and
+	// to imports. A local called fmt or len would hide the package or builtin
+	// for the rest of its block, so never reuse those names. go vet stays
+	// silent about this; a shadowing linter is the tool that catches it.
 }

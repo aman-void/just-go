@@ -1,3 +1,5 @@
+// NOTE: the length is part of an array's type, and assignment copies every
+// element, so arrays show up as fixed buffers and in [N]byte style APIs.
 package main
 
 import "fmt"
@@ -16,7 +18,7 @@ func main() {
 	fmt.Println("grid:", grid, "rows:", len(grid), "cols:", len(grid[0]))
 
 	scores := [5]int{9, 8, 7, 6, 5}
-	backup := scores // full copy, not a reference
+	backup := scores // full element copy, not a reference
 	backup[0] = 0
 	fmt.Println("scores:", scores, "backup:", backup, "sum:", total(scores))
 }

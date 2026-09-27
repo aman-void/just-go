@@ -1,5 +1,5 @@
-// Drop init and post and for becomes while; drop the condition too and it
-// loops forever until break or return. Keep bodies flat with continue.
+// NOTE: drop init and post and for becomes while; drop the condition too and
+// it loops forever until break or return. Keep bodies flat with continue.
 package main
 
 import "fmt"
@@ -16,6 +16,8 @@ func main() {
 	// Infinite loop with an explicit exit: the idiomatic do-while shape.
 	// Java's do { work } while (cond) becomes for { work; if !cond break }.
 	attempts := 0
+	// WARNING: an infinite for needs a break or return in its body, or the
+	// program never finishes.
 	for {
 		attempts++
 		if attempts >= 3 {

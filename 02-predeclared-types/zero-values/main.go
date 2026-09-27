@@ -1,5 +1,5 @@
-// Every type has a zero value worth using, so a struct is best designed so that
-// `var p player` is already correct and no constructor is needed.
+// NOTE: every type has a zero value worth using, so a struct is best designed
+// so that `var p player` is already correct and no constructor is needed.
 package main
 
 import "fmt"

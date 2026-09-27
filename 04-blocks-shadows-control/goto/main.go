@@ -1,4 +1,4 @@
-// goto jumps forward to shared cleanup. It can never skip a declaration
+// NOTE: goto jumps forward to shared cleanup. It can never skip a declaration
 // nor dive into a block, which keeps it honest. Prefer labeled break or an
 // early return; save goto for the rare case where both read worse.
 package main
@@ -18,16 +18,16 @@ func main() {
 done:
 	fmt.Println("wind down at speed", speed)
 
-	// Illegal jumps, left as comments so the file still builds:
-	// goto skip jumps over declaration of b at ./main.go (no skipping vars)
+	// BUG: both of these jumps are rejected by the compiler, so they stay
+	// commented out. A goto may never skip a declaration:
 	//   speed := 1
 	//   goto skip
-	//   extra := 2
+	//   extra := 2  // rejects: jumps over declaration of extra
 	// skip:
 	//   _ = extra
-	// goto inner jumps into block (no diving into inner or parallel blocks)
+	// Nor may it dive into a block:
 	//   if speed > 0 {
-	//       goto inner
+	//       goto inner // rejects: jumps into block
 	//   }
 	//   if speed < 100 {
 	//   inner:

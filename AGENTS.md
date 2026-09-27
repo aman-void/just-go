@@ -10,4 +10,11 @@
   run-order table (`Order | Run it | What it teaches you`), then one section per
   subtopic with plain-English idea + real-world analogy + short code/output quoted
   from the actual program + one beginner trap, ending with a rules cheat sheet.
+- Comment tags (Zed `zed-comment` extension, already installed): tag the **first
+  line only** of a comment block; continuation lines stay untagged. Tag meanings:
+  `NOTE:` file header + ordinary explanation, `WARNING:` beginner traps, `BUG:`
+  commented-out code that panics or fails to compile, `PERF:` capacity growth /
+  map ordering / copy and GC costs, `TODO:` genuinely unfinished. Extension also
+  accepts `?:`, `*:`, `!:`, `#:` and `NAME(user):`, but this repo uses the word
+  tags above. Never tag commented-out code itself — it is code, not prose.
 - Chapters are numbered in learning order: `01-hello-go`, `02-predeclared-types`, `03-composite-types`, …

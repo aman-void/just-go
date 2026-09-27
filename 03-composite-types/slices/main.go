@@ -1,5 +1,5 @@
-// len is what you may index, cap is the room left in the backing array.
-// Watch cap double below as append runs out of space.
+// NOTE: len is what you may index, cap is the room left in the backing array.
+// Only make sets the capacity, and only append grows it.
 package main
 
 import "fmt"
@@ -18,7 +18,7 @@ func main() {
 	made[1] = 5
 	fmt.Printf("make:    len=%d cap=%d %v\n", len(made), cap(made), made)
 
-	// watch cap double as append runs out of room
+	// PERF: watch cap double as append runs out of room.
 	grown := make([]int, 0, 2)
 	for i := range 6 {
 		grown = append(grown, i)

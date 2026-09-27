@@ -1,4 +1,4 @@
-// if can declare a variable scoped to the whole if/else chain. It keeps
+// NOTE: if can declare a variable scoped to the whole if/else chain. It keeps
 // temporaries where they are used and lets each branch read them.
 package main
 
@@ -14,9 +14,11 @@ func main() {
 	} else {
 		fmt.Println(name, "fits the board:", n)
 	}
-	// fmt.Println(n) // does not compile: n exists only inside the if statement
+	// BUG: n lived only for that decision, so this would not compile:
+	// fmt.Println(n)
 
-	// The short statement shadows outer names too, so keep it to fresh names:
+	// WARNING: the short statement shadows outer names too, so keep it to
+	// fresh temporaries and never to side-effect calls.
 	cutoff := 6
 	if cutoff := 4; cutoff > len(name) {
 		fmt.Println("local cutoff", cutoff, "beats outer", 6)

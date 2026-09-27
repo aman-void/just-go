@@ -1,5 +1,5 @@
-// A bare break or continue steers only its innermost loop. Label the outer
-// loop when a whole heat must be skipped or abandoned from inside.
+// NOTE: a bare break or continue steers only its innermost loop. Label the
+// outer loop when a whole heat must be skipped or abandoned from inside.
 package main
 
 import "fmt"

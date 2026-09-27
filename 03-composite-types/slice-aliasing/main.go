@@ -1,6 +1,6 @@
-// A slice header is just (pointer, len, cap), so every alias points at the same
-// memory. The three-index form caps capacity, which forces the next append to
-// copy rather than write over data someone else is holding.
+// NOTE: a slice header is just (pointer, len, cap), so every alias points at the
+// same memory. The three-index form caps capacity, which forces the next append
+// to copy rather than write over data someone else is holding.
 package main
 
 import "fmt"
@@ -15,6 +15,8 @@ func main() {
 	grown[2] = 200
 	fmt.Println("base after writing through grown:", base)
 
+	// WARNING: a[i:j:k] caps capacity, so the next append must copy and your
+	// caller can no longer be surprised by writes through the returned slice.
 	fixed := base[2:3:5]     // cap is exactly 1
 	over := append(fixed, 9) // cap exhausted: new backing array
 	over[0] = -1

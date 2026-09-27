@@ -1,6 +1,6 @@
-// switch matches without fallthrough. List several values per case, scope
-// a variable to every branch, and reach for a blank switch when the cases
-// are boolean tests rather than equality checks.
+// NOTE: switch matches without fallthrough. List several values per case,
+// scope a variable to every branch, and reach for a blank switch when the
+// cases are boolean tests rather than equality checks.
 package main
 
 import "fmt"
@@ -36,8 +36,8 @@ func main() {
 		}
 	}
 
-	// break inside a case exits the switch, not the loop. Label the loop to
-	// stop everything from inside a case.
+	// WARNING: break inside a case exits the switch, not the loop. Label the
+	// loop (break laps) to stop everything from inside a case.
 laps:
 	for lap := 1; lap <= 10; lap++ {
 		switch lap {

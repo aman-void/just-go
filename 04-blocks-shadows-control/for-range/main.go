@@ -1,4 +1,4 @@
-// for-range is the default walk over slices, maps, and strings. It hands
+// NOTE: for-range is the default walk over slices, maps, and strings. It hands
 // you copies, decodes runes in strings, and visits map keys in random order.
 package main
 
@@ -26,8 +26,8 @@ func main() {
 	}
 	fmt.Println()
 
-	// Unsorted map ranging shuffles on purpose (hash seed + jitter), so sort
-	// keys for stable output. fmt.Println sorts map keys when printing maps.
+	// PERF: unsorted map ranging shuffles on purpose (hash seed + jitter), so
+	// sort keys for stable output. fmt.Println sorts keys when printing a map.
 	keys := make([]string, 0, len(grid))
 	for k := range grid {
 		keys = append(keys, k)
@@ -44,7 +44,8 @@ func main() {
 		fmt.Println(i, r, string(r))
 	}
 
-	// The value is a copy: mutating it leaves the slice untouched.
+	// WARNING: the value is a copy, so mutating it leaves the slice untouched.
+	// Index-assign (stints[i] = ...) when you mean to edit.
 	for _, v := range stints {
 		v *= 2
 	}

@@ -1,9 +1,10 @@
+// NOTE: map[T]struct{} is the set idiom. The empty struct occupies no memory,
+// so a bool or int value would only waste space per key.
 package main
 
 import "fmt"
 
 func main() {
-	// struct{} occupies no memory, so a bool or int value would only waste space
 	seen := map[string]struct{}{}
 	for _, w := range []string{"go", "go", "rust", "go", "zig"} {
 		seen[w] = struct{}{}

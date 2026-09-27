@@ -1,6 +1,6 @@
-// Structs are values, so assigning one copies all of it, and == only compiles
-// when every field is comparable. Struct tags are the one thing conversion
-// ignores, so a tagged and an untagged struct convert freely.
+// NOTE: structs are values, so assigning one copies all of it, and == only
+// compiles when every field is comparable. Struct tags are the one thing
+// conversion ignores, so a tagged and an untagged struct convert freely.
 package main
 
 import "fmt"
@@ -33,8 +33,8 @@ func main() {
 	fmt.Println("p == Point{1, 2}:", p == Point{1, 2})
 	fmt.Println("l == equal literal:", l == Labeled{Point: Point{X: 1, Y: 7}, Label: "start"})
 
-	// type Bag struct{ Items []int }
-	// _ = Bag{} == Bag{} // compile error: struct contains a non-comparable field
+	// BUG: a struct holding a slice has no == at all.
+	// _ = Bag{} == Bag{} would not compile: non-comparable field
 
 	anon := struct {
 		Name string

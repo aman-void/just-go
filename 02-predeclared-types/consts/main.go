@@ -1,5 +1,6 @@
-// An untyped constant takes whatever type the context asks for, which is how one
-// limit serves both an int and a float64. Giving it a type ends that freedom.
+// NOTE: an untyped constant takes whatever type the context asks for, which is
+// how one limit serves both an int and a float64. Giving it a type ends that
+// freedom.
 package main
 
 import "fmt"

@@ -1,5 +1,5 @@
-// Nothing converts on its own, and int -> string is the conversion that bites:
-// it produces a rune, not digits, so strconv.Itoa is what you actually want.
+// NOTE: nothing converts on its own, and int -> string is the conversion that
+// bites: it produces a rune, not digits, so strconv.Itoa is what you want.
 package main
 
 import (
