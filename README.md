@@ -11,6 +11,7 @@ I come back to the code.
 | `01-hello-go/`         | Go environment & toolchain | `cd 01-hello-go && go run .` |
 | `02-predeclared-types/`| Predeclared types & declarations | `cd 02-predeclared-types && go run .` |
 | `03-composite-types/`  | Arrays, slices, maps & structs | `cd 03-composite-types && go run .` |
+| `04-blocks-shadows-control/` | Blocks, shadows & control structures | `cd 04-blocks-shadows-control && go run .` |
 
 Each chapter: overview in root `main.go`, runnable subtopic in its own folder
 (`go run ./<topic>`), notes in that chapter's `README.md`.
