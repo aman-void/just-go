@@ -1,10 +1,26 @@
 # AGENTS.md
 
+- **Git: high strictness.** Never write a commit, create a branch, or push any
+  code without the author's explicit consent. Prepare the work, show the diff or
+  staged changes, and wait for approval before touching git state.
 - Root `README.md` is the codebase index + Go tooling reference; each `NN-slug/README.md` holds that chapter's notes.
 - Each `NN-slug/` is an independent Go module with its own `go.mod` (`github.com/aman-void/just-go/<slug>`, Go 1.27). No root `go.mod`, no `go.work`.
 - Chapter layout: root `main.go` is overview only; each subtopic is a runnable `package main` in its own folder (`go run ./<topic>`). Never add a nested `go.mod`.
 - Every chapter ships an identical `Makefile` (copy it verbatim to new chapters — it derives the chapter name from its folder and the topics from `*/main.go`, so never hand-edit it). Targets: `help`, `list`, `run <topic> [args]`, `new <topic>`, `build`, `vet`, `test`, `fmt`, `check`, `tidy`; `make run <topic> ANIM=0` skips the banner. The root `Makefile` fans `list`/`check` across chapters.
 - New chapters: `NN-kebab-slug/` + `go.mod` + `main.go` overview + topic subfolders + `README.md` notes + the chapter `Makefile`. Keep every example original.
+- **Branch layout.** Two kinds of work, two homes:
+  - Root-level files (`README.md`, `Makefile`, `fmt-printing.md`) are committed on
+    `main`.
+  - Every `NN-slug/` chapter lives on its own branch, named after the chapter
+    (`01-hello-go`, `03-composite-types`, …).
+- **Chapter lifecycle.** Create the chapter branch, write the code, commit it there,
+  push it, then merge it into `main`. **Never delete the branch** — not locally, not
+  on the remote. The branches are a permanent per-chapter reading path, so anyone
+  can `git checkout NN-slug` (or browse it on the remote) and read that chapter in
+  isolation without paging through the others.
+- The reference PDF in the repo root is local reading material only. It is never
+  committed, never staged, and stays ignored (`*.pdf` in `.gitignore`). Ask about it
+  as context, not as tracked content.
 - Chapter check: `make check` (same as `gofmt -l . && go vet ./... && go build ./...`). Root has no Go code to build.
 - Session CWD defaults to `01-hello-go/`; repo root is its parent `just-go/`. `cd` to the target chapter dir before running Go commands.
 - Chapter `README.md` style (human-friendly notes): big-idea intro first, then a
