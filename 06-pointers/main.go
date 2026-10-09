@@ -35,11 +35,11 @@ func main() {
 	// fmt.Println("dereference nil pointer:", *z)
 
 	// The guard that makes the dereference in the else branch safe.
-	if z == nil {
-		fmt.Println("z is nil, so there is nothing to dereference")
-	} else {
-		fmt.Println("dereference z pointer:", *z)
-	}
+	// if z == nil {
+	// 	fmt.Println("z is nil, so there is nothing to dereference")
+	// } else {
+	// 	fmt.Println("dereference z pointer:", *z)
+	// }
 
 	// NOTE: new(T) allocates a fresh zero value of T and hands back its address,
 	// so the result is never nil. Rarely needed — `n := 0; p := &n` says the same
