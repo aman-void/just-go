@@ -34,4 +34,15 @@
   map ordering / copy and GC costs, `TODO:` genuinely unfinished. Extension also
   accepts `?:`, `*:`, `!:`, `#:` and `NAME(user):`, but this repo uses the word
   tags above. Never tag commented-out code itself — it is code, not prose.
+- **Chapter completion gate.** After writing topic code, always ask: *"Is this
+  chapter complete, or are you going to write more examples?"* Never assume a
+  chapter is done. When the answer is yes:
+  1. Write or update that chapter's `README.md` (style above), covering every
+     subtopic, with output quoted from the actual programs — re-run them rather
+     than trusting earlier output.
+  2. Add or update the chapter's row in the root `README.md` Layout table.
+  3. Only then treat the chapter as finished.
+
+  Root `README.md` is the index, so a missing Layout row means the chapter is
+  effectively invisible to a reader.
 - Chapters are numbered in learning order: `01-hello-go`, `02-predeclared-types`, `03-composite-types`, …
