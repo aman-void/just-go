@@ -18,6 +18,9 @@ send someone to the house with it.
 | ----- | ------ | ------------------- |
 | 1 | `go run .` | `&` takes an address, `*` reads the value back out |
 | 2 | `go run ./call-by-value` | Every argument is a copy — and why slices and maps still surprise you |
+| 3 | `go run ./pointers-mutable-params` | Passing a pointer so the caller sees the change — and why you still cannot swap the caller's pointer out |
+| 4 | `go run ./pointers-last-resort` | nil, aliasing, and GC work: the reasons to reach for a pointer only on purpose |
+| 5 | `go run ./pointer-passing-perf` | What copying a 1 MB struct actually costs, measured |
 
 ## 1. A pointer is a sticky note with an address on it (`main.go`)
 
@@ -72,7 +75,6 @@ address of x: 0x85f6cb52070
 value at pointerToX: hello
 value of y: hello world
 z is nil: true
-z is nil, so there is nothing to dereference
 new() is never nil: true
 zero values: int=0 str="" bool=false
 ```
@@ -142,6 +144,107 @@ escapes. Write to the existing elements (`s[i] = v`) and the caller sees it;
 reassign the slice itself and the caller does not. Same map story in reverse:
 `m[k] = v` is visible to the caller, `m = map[...]{}` is not.
 
+## 3. Pointers indicate mutable params (`pointers-mutable-params/`)
+
+Plain English: because every argument is a copy, writing to a `*int` parameter
+writes to the *caller's* variable. That is the whole trick — and it stops at the
+variable. A function can change what a pointer points at, but it cannot change
+which variable the caller holds.
+
+Real world: you hand someone a key to a locker. They can put something new inside
+the locker, and you will see it when you open the door. Handing them a *new* key
+does not change which key hangs on your ring — that is a copy of the key, not the
+keyring.
+
+```go
+func updateOne(num int) { num = 100 }
+func updateTwo(num *int) { *num = 200 }
+
+func failedUpdate(g *int) {
+	x := 10
+	g = &x
+}
+```
+
+Output:
+
+```text
+n1:  10
+n2:  200
+f:  <nil>
+```
+
+`n1` stays 10 because the copy was changed. `n2` becomes 200 because the function
+wrote through the address. `f` stays nil: `failedUpdate` reassigned its own copy of
+the pointer, so the caller's `f` never learned about `x`.
+
+Beginner trap: `g = &x` looks like it should connect the caller to the new value.
+It does not — reassigning a parameter is *always* local, pointer or not. If you
+want the caller to end up holding a different pointer, return it: `func swap() *int`.
+
+## 4. Pointers are a last resort (`pointers-last-resort/`)
+
+Plain English: pointers are not the faster or more modern choice. They buy three
+specific things — optionality, shared mutation, and cheap passing of large values —
+and they charge for it in `nil` panics, aliasing that makes code harder to reason
+about, and extra GC bookkeeping.
+
+Real world: a shared spreadsheet is great when the whole team needs to edit the
+same sheet. It is a nightmare when you only needed to read one number. Passing the
+file around (by value) is calmer; sharing it (by pointer) is faster and needs
+rules.
+
+```go
+func updateAge(age int)  { age = 30 }
+func updateAgeTwo(age *int) { *age = 30 }
+```
+
+Output:
+
+```text
+25
+30
+```
+
+The value version cannot reach the caller; the pointer version can. Neither is
+"the Go way" in general — pick per call site.
+
+Beginner trap: a pointer is not automatically cheaper. Copying a small struct is
+both simpler and faster than adding a level of indirection; the perf win only
+starts once the struct is large enough that the copy dominates.
+
+## 5. What passing cost actually is (`pointer-passing-perf/`)
+
+Plain English: passing a 1 MB struct by value copies all 1 MB onto the stack;
+passing a pointer copies one 8-byte address. The file also picks up chapter 1's
+distinction: a nil `*Data` is not a zero `Data`, it is no `Data` at all — and
+`new(Data)` is never nil, but it does allocate the full 1 MB on the heap.
+
+```go
+type Data struct{ Buffer [1_000_000]byte }
+
+func processCopy(d Data)        {} // copies 1 MB
+func processPointerPassing(d *Data) {} // copies 8 bytes
+```
+
+Measured with `go test -bench=. -benchmem ./pointer-passing-perf` on go 1.27.1:
+
+```text
+BenchmarkByValue-4     10846     126240 ns/op   1007620 B/op   1 allocs/op
+BenchmarkByPointer-4   1000000000      0.5125 ns/op         0 B/op   0 allocs/op
+```
+
+Read the *gap*, not the absolute numbers: the by-value figure moved between 126k
+and 424k ns/op across runs on the same machine. And the pointer row sits near zero
+because the compiler inlines `byPointer` and discards the unused result, so it
+measures close to an empty loop — "a million bytes copied" against "nothing copied",
+not a literal 200,000x speedup.
+
+Beginner trap: `new(Data)` looks like the safe alternative to `var p *Data`, and it
+is safe to dereference — but `go build -gcflags=-m` reports `new(Data) escapes to
+heap`, so it allocates the entire 1 MB anyway. Taking the address of a value you
+already have (`&d`) is what costs 8 bytes and allocates nothing.
+
 ## Rules I want to remember
 
 - `&x` is the address, `*p` is the value. They are inverses, not interchangeable.
@@ -150,6 +253,13 @@ reassign the slice itself and the caller does not. Same map story in reverse:
 - Go has no `free`, no `delete(ptr)`, no dangling pointers. The garbage
   collector owns the memory; a pointer is just a value that gets copied around.
 - Every argument is a copy. Reassigning a parameter never reaches the caller.
+- `*p = v` reaches the caller; `p = &x` never does. To change which pointer the
+  caller holds, return one.
+- Pass by value for small structs — it is simpler and usually faster. Pass a
+  pointer when the struct is large, when it may be nil, or when the callee must
+  mutate it on purpose.
+- `var p *T` is nil (nothing to read); `new(T)` is never nil but still allocates
+  the whole value on the heap.
 - Reference-typed values (slices, maps, channels, pointers) copy the header, not
   the data — so element writes are shared, and reassignment is not.
 - `unsafe` exists for the cases where the type system's guarantees are in your
